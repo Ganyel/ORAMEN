@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useOrderContext } from '../context/OrderContext'
 import OrderContextHeader from '../components/OrderContextHeader'
+import { API_BASE_URL } from '../config/api'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = API_BASE_URL
 
 const navItems = [
   { id: 'home', label: 'Home', icon: 'home' },

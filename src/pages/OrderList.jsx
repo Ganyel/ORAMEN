@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useOrderContext } from '../context/OrderContext'
 import OrderContextHeader from '../components/OrderContextHeader'
+import { API_ADMIN_URL, API_BASE_URL } from '../config/api'
 
 function OrderList({ onNavigate }) {
   const { orderType } = useOrderContext()
@@ -19,7 +20,7 @@ function OrderList({ onNavigate }) {
   const fetchOrders = async () => {
     try {
       setLoading(true)
-      const res = await fetch('http://localhost:5000/api/admin/orders?limit=50')
+      const res = await fetch(`${API_ADMIN_URL}/orders?limit=50`)
       const data = await res.json()
       if (data.success) {
         setOrders(data.data.map(order => ({
@@ -44,7 +45,7 @@ function OrderList({ onNavigate }) {
 
   const handleRateOrder = async (order) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/orders/${order.id}`)
+      const res = await fetch(`${API_ADMIN_URL}/orders/${order.id}`)
       const data = await res.json()
       if (data.success && data.data.items) {
         setRatingOrder(order)
@@ -61,7 +62,7 @@ function OrderList({ onNavigate }) {
     try {
       for (const item of ratingItems) {
         if (item.rating > 0 && item.menu_item_id) {
-          await fetch(`http://localhost:5000/api/menu/${item.menu_item_id}/rating`, {
+          await fetch(`${API_BASE_URL}/menu/${item.menu_item_id}/rating`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 

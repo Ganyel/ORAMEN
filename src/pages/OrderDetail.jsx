@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import html2pdf from 'html2pdf.js';
 import Invoice from './Invoice';
+import { API_ADMIN_URL } from '../config/api';
 
 const OrderDetail = () => {
   const { orderNumber } = useParams();
@@ -9,7 +10,7 @@ const OrderDetail = () => {
   const invoiceRef = useRef();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/admin/orders/${orderNumber}`)
+    fetch(`${API_ADMIN_URL}/orders/${orderNumber}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {

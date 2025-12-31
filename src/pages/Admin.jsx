@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import MonthlyReport from './MonthlyReport'
+import { API_ADMIN_URL } from '../config/api'
 
-const API_BASE = 'http://localhost:5000/api/admin'
+const API_BASE = API_ADMIN_URL
 const POLLING_INTERVAL = 5000 // 5 seconds
 
 function Admin({ onNavigate }) {
@@ -243,7 +244,7 @@ function Admin({ onNavigate }) {
       }
     } catch (err) {
       console.error('Backend error:', err)
-      alert('Server tidak tersedia. Pastikan server backend berjalan di http://localhost:5000')
+      alert('Server tidak tersedia. Pastikan server backend berjalan.')
     }
   }
 

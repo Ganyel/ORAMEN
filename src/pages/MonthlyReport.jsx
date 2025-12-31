@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { API_ADMIN_URL } from '../config/api'
 
-const API_BASE = 'http://localhost:5000/api/admin'
+const API_BASE = API_ADMIN_URL
 
 const MONTH_NAMES = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',

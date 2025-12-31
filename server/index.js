@@ -10,7 +10,23 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// CORS configuration for production
+const allowedOrigins = process.env.FRONTEND_URL 
+  ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000']
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins for now, can be restricted later
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Static folder for uploaded images
@@ -108,7 +124,9 @@ app.post('/api/admin/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    const imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+    // Use environment variable for base URL in production
+    const baseUrl = process.env.BACKEND_URL || `http://localhost:${PORT}`;
+    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
     res.json({ success: true, url: imageUrl });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -612,7 +630,7 @@ app.post('/api/create-transaction', async (req, res) => {
       },
       item_details: itemDetails,
       callbacks: {
-        finish: 'http://localhost:5173/payment-finish'
+        finish: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment-finish` : 'http://localhost:5173/payment-finish'
       }
     };
 
@@ -816,7 +834,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Midtrans Mode: ${process.env.MIDTRANS_IS_PRODUCTION === 'true' ? 'Production' : 'Sandbox'}`);
 });

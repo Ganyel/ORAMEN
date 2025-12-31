@@ -8,8 +8,24 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Oramen - Japanese Food Ordering</title>
-    <!-- Midtrans Snap.js - Production -->
-    <script type="text/javascript" src="https://app.midtrans.com/snap/snap.js" data-client-key="Mid-client-JlAC5VNyBjB4lG9o"></script>
+    <!-- Midtrans Snap.js - Will be loaded dynamically -->
+    <script id="midtrans-script"></script>
+    <script>
+      // Load Midtrans Snap.js dynamically based on environment
+      (function() {
+        var script = document.getElementById('midtrans-script');
+        // Check if using sandbox or production (default to production for existing setup)
+        var isSandbox = window.MIDTRANS_SANDBOX === true;
+        var clientKey = window.MIDTRANS_CLIENT_KEY || 'Mid-client-JlAC5VNyBjB4lG9o';
+        
+        if (isSandbox) {
+          script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+        } else {
+          script.src = 'https://app.midtrans.com/snap/snap.js';
+        }
+        script.setAttribute('data-client-key', clientKey);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
